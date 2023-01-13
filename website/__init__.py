@@ -1,0 +1,33 @@
+import flask
+from flask_sqlalchemy import SQLAlchemy
+import os
+
+db = SQLAlchemy()
+DB_NAME = "database.db"
+
+def create_app():
+    app = flask.Flask(__name__)
+
+    app.secret_key = 'KfVRbZZTJxMG5HaPT3KQWxKtYH67cUhcMsprxWWZp9EuMP84aj3PpcgBzDYf'
+    app.config['SESSION_TYPE'] = 'filesystem'
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+    db.init_app(app)
+
+    from .views import views
+    from .auth import auth
+    
+    app.register_blueprint(views, url_prefix='/')
+    app.register_blueprint(auth, url_prefix='/')
+
+    from .models import User, Note
+
+    create_database(app)
+
+    return app
+
+def create_database(app):
+    if not os.path.exists('website/' + DB_NAME):
+        with app.app_context():
+            db.create_all()
+            print("The db was created!")
