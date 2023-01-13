@@ -8,6 +8,7 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    """Checks POSTed email & passwd against the database"""
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -26,12 +27,14 @@ def login():
 @auth.route('/logout')
 @login_required
 def logout():
+    """Default flask_login logout, redirection to login"""
     logout_user()
     flash("You've logged out!", category='error')
     return redirect(url_for('auth.login'))
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def signup():
+    """Gets email, passwd1, passwd2; Compares passwd1 passwd2; If success redirect /"""
     if request.method == 'POST':
         email = request.form.get('email')
         password1 = request.form.get('password1')

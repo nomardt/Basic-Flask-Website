@@ -7,6 +7,7 @@ db = SQLAlchemy()
 DB_NAME = "database.db"
 
 def create_app():
+    """Initial setup"""
     app = flask.Flask(__name__)
 
     app.secret_key = 'KfVRbZZTJxMG5HaPT3KQWxKtYH67cUhcMsprxWWZp9EuMP84aj3PpcgBzDYf'
@@ -37,7 +38,8 @@ def create_app():
     return app
 
 def create_database(app):
+    """Creates the database.db file"""
     if not os.path.exists('instance/' + DB_NAME):
         with app.app_context():
             db.create_all()
-            print("The db was created!")
+            print("The db has been created!")
