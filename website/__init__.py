@@ -1,19 +1,19 @@
+import os
 import flask
 from flask_sqlalchemy import SQLAlchemy
-import os
 from flask_login import LoginManager
+from .config import configure
 
 db = SQLAlchemy()
-DB_NAME = "database.db"
 
-def create_app():
+def create_app() -> flask.Flask:
     """Initial setup"""
     app = flask.Flask(__name__)
 
     app.secret_key = 'KfVRbZZTJxMG5HaPT3KQWxKtYH67cUhcMsprxWWZp9EuMP84aj3PpcgBzDYf'
-    app.config['SESSION_TYPE'] = 'filesystem'
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+    db_name = configure(app)
+
     db.init_app(app)
 
     from .views import views
@@ -24,7 +24,7 @@ def create_app():
 
     from .models import User, Note
 
-    create_database(app)
+    create_database(app, db_name)
 
     login_manager = LoginManager()
     # Setting the page shown instead of page requiring log in
@@ -37,9 +37,9 @@ def create_app():
 
     return app
 
-def create_database(app):
+def create_database(app: flask.Flask, db_name: str) -> None:
     """Creates the database.db file"""
-    if not os.path.exists('instance/' + DB_NAME):
+    if not os.path.exists('instance/' + db_name):
         with app.app_context():
             db.create_all()
             print("The db has been created!")

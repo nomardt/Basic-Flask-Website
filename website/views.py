@@ -7,7 +7,7 @@ views = Blueprint('views', __name__)
 
 @views.route('/', methods=['GET', 'POST'])
 @login_required
-def home():
+def home() -> render_template:
     """Functionality of POSTing notes to the database.db"""
     if request.method == 'POST':
         note = request.form.get('note')
